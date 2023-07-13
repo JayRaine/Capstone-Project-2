@@ -47,22 +47,3 @@ class Recipe(): # Creating the recipe class
             i = int(i)
             print(f"{i + 1}. {self.instructions[i].capitalize()}")
             
-
-class Recipe_manager(Recipe): # Creating Recipe_manager class that inherits all functions in Recipe class
-    
-    def new_recipe(self): # Function to add new recipes
-        recipe_name = input("Please enter the name of the recipe: ")
-        dietary_info = input("Please enter the calories per serving: ") # Asking the user for the recipe details
-        cook_time = input("Please enter the cook time for this recipe: ")
-        ingredients = []
-        instructions = []
-        n = int(input("Please enter the number of ingredients: "))
-        for i in range(0, n):
-            item = input("Please enter an ingredient: ")
-            ingredients.append(item)
-        n = int(input("Please enter how many steps there are in the recipe: "))
-        for i in range(0, n):
-            step = input("Please enter the next instruction: ")
-            instructions.append(step)
-        
-         # = Recipe(recipe_name, ingredients, instructions, cook_time, dietary_info)
