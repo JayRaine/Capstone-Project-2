@@ -1,10 +1,11 @@
 class Recipe:
-    def __init__(self, recipe_title, ingredient_list, instruction_list, cooking_time, dietary_info):
+    def __init__(self, recipe_title, ingredient_list, instruction_list, cooking_time, dietary_info, equipment):
         self.title = recipe_title
         self.ingredient_list = ingredient_list
         self.instruction_list = instruction_list
         self.cooking_time = cooking_time
         self.dietary_info = dietary_info
+        self.equipment = equipment
 
     # Function for setting the name of the recipe and forcing user input to title case
     def set_title(self, recipe_title):
@@ -40,6 +41,15 @@ class Recipe:
 
     def get_dietary_info(self):  # Function for retrieving the dietary info
         return self.dietary_info
+    
+    # Function for setting the equipment needed
+    def set_equipment(self,equipment):
+        self.equipment = equipment
+
+    # Function for getting the equipment
+    def get_equipment(self):
+        return self.equipment
+
 
     def get_details(self, details):
         details_dict = {}
