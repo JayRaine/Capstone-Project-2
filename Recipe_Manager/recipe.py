@@ -41,13 +41,45 @@ class Recipe:
     def get_dietary_info(self):  # Function for retrieving the dietary info
         return self.dietary_info
 
-    def get_details(self):  # Function for displaying all of the information in the recipe
-        print(f"Recipe: {self.title} \n"
-              f"Dietary information: {self.dietary_info} \n"
-              f"This recipe takes {self.cooking_time} minutes to cook")
-        print("The ingredients are: " +
-              ', '.join(self.ingredient_list).capitalize())
-        length = len(self.instruction_list)
-        for i in range(length):
-            i = int(i)
-            print(f"{i + 1}. {self.instruction_list[i].capitalize()}")
+    def get_details(self, details):
+        details_dict = {}
+        for detail in details:
+            match detail:
+                case "title":
+                    details_dict["title"] = self.get_title()
+                case "ingredients":
+                    details_dict["ingredients"] = self.get_ingredients()
+                case "instructions":
+                    details_dict["instructions"] = self.get_instructions()
+                case "cooking_time":
+                    details_dict["cooking_time"] = self.get_cooking_time()
+                case "dietary_info":
+                    details_dict["dietary_info"] = self.get_dietary_info()
+        return details_dict
+
+    # # Function for printing the recipe details
+    # def print_recipes(self, details):
+    #     recipe_dict = self.get_details(details)
+    #     for detail in recipe_dict:
+    #         match detail:
+    #             case "title":
+    #                 print(f"Recipe: {detail}")
+    #             case "ingredients":
+    #                 print("The ingredients are: " +
+    #                       ', '.join(detail).capitalize())
+    #             case "instructions":
+    #                 for i, instruction in enumerate(detail):
+    #                     print(f"{i + 1}. {instruction.capitalize()}")
+    #             case "cooking_time":
+    #                 print(f"This recipe takes {detail} minutes to cook")
+    #             case "dietary_info":
+    #                 print(f"Dietary information: {detail}")
+
+    # def get_details(self):
+    #     print(f"Recipe: {self.title}")
+    #     print(f"Dietary information: {self.dietary_info}")
+    #     print(f"This recipe takes {self.cooking_time} minutes to cook")
+    #     print("The ingredients are: " +
+    #           ', '.join(self.ingredient_list).capitalize())
+    #     for i, instruction in enumerate(self.instruction_list):
+    #         print(f"{i + 1}. {instruction.capitalize()}")
