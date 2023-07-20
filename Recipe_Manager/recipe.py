@@ -1,11 +1,11 @@
 class Recipe:
-    def __init__(self, recipe_title, ingredient_list, instruction_list, cooking_time, dietary_info, equipment):
-        self.title = recipe_title
+    def __init__(self, recipe_title, ingredient_list, instruction_list, cooking_time, dietary_info, equipment_list):
+        self.title = recipe_title.title()
         self.ingredient_list = ingredient_list
         self.instruction_list = instruction_list
         self.cooking_time = cooking_time
         self.dietary_info = dietary_info
-        self.equipment = equipment
+        self.equipment_list = equipment_list
 
     # Function for setting the name of the recipe and forcing user input to title case
     def set_title(self, recipe_title):
@@ -41,23 +41,29 @@ class Recipe:
 
     def get_dietary_info(self):  # Function for retrieving the dietary info
         return self.dietary_info
-    
+
     # Function for setting the equipment needed
-    def set_equipment(self,equipment):
-        self.equipment = equipment
+    def set_equipment(self, equipment):
+        self.equipment_list = equipment
 
     # Function for getting the equipment
     def get_equipment(self):
-        return self.equipment
+        return self.equipment_list
 
-
-    def get_details(self):  # Function for displaying all of the information in the recipe
-        print(f"Recipe: {self.title} \n"
-              f"Dietary information: {self.dietary_info} \n"
-              f"This recipe takes {self.cooking_time} minutes to cook")
-        print("The ingredients are: " +
-              ', '.join(self.ingredient_list).capitalize())
-        length = len(self.instruction_list)
-        for i in range(length):
-            i = int(i)
-            print(f"{i + 1}. {self.instruction_list[i].capitalize()}")
+    def get_details(self, details):
+        details_dict = {}
+        for detail in details:
+            match detail:
+                case "title":
+                    details_dict["title"] = self.get_title()
+                case "ingredients":
+                    details_dict["ingredients"] = self.get_ingredients()
+                case "instructions":
+                    details_dict["instructions"] = self.get_instructions()
+                case "cooking_time":
+                    details_dict["cooking_time"] = self.get_cooking_time()
+                case "dietary_info":
+                    details_dict["dietary_info"] = self.get_dietary_info()
+                case "equipment":
+                    details_dict["equipment"] = self.get_equipment()
+        return details_dict
