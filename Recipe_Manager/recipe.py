@@ -1,11 +1,11 @@
 class Recipe:
-    def __init__(self, recipe_title, ingredient_list, instruction_list, cooking_time, dietary_info, equipment):
-        self.title = recipe_title
+    def __init__(self, recipe_title, ingredient_list, instruction_list, cooking_time, dietary_info, equipment_list):
+        self.title = recipe_title.title()
         self.ingredient_list = ingredient_list
         self.instruction_list = instruction_list
         self.cooking_time = cooking_time
         self.dietary_info = dietary_info
-        self.equipment = equipment
+        self.equipment_list = equipment_list
 
     # Function for setting the name of the recipe and forcing user input to title case
     def set_title(self, recipe_title):
@@ -41,15 +41,14 @@ class Recipe:
 
     def get_dietary_info(self):  # Function for retrieving the dietary info
         return self.dietary_info
-    
+
     # Function for setting the equipment needed
-    def set_equipment(self,equipment):
-        self.equipment = equipment
+    def set_equipment(self, equipment):
+        self.equipment_list = equipment
 
     # Function for getting the equipment
     def get_equipment(self):
-        return self.equipment
-
+        return self.equipment_list
 
     def get_details(self, details):
         details_dict = {}
@@ -65,31 +64,6 @@ class Recipe:
                     details_dict["cooking_time"] = self.get_cooking_time()
                 case "dietary_info":
                     details_dict["dietary_info"] = self.get_dietary_info()
+                case "equipment":
+                    details_dict["equipment"] = self.get_equipment()
         return details_dict
-
-    # # Function for printing the recipe details
-    # def print_recipes(self, details):
-    #     recipe_dict = self.get_details(details)
-    #     for detail in recipe_dict:
-    #         match detail:
-    #             case "title":
-    #                 print(f"Recipe: {detail}")
-    #             case "ingredients":
-    #                 print("The ingredients are: " +
-    #                       ', '.join(detail).capitalize())
-    #             case "instructions":
-    #                 for i, instruction in enumerate(detail):
-    #                     print(f"{i + 1}. {instruction.capitalize()}")
-    #             case "cooking_time":
-    #                 print(f"This recipe takes {detail} minutes to cook")
-    #             case "dietary_info":
-    #                 print(f"Dietary information: {detail}")
-
-    # def get_details(self):
-    #     print(f"Recipe: {self.title}")
-    #     print(f"Dietary information: {self.dietary_info}")
-    #     print(f"This recipe takes {self.cooking_time} minutes to cook")
-    #     print("The ingredients are: " +
-    #           ', '.join(self.ingredient_list).capitalize())
-    #     for i, instruction in enumerate(self.instruction_list):
-    #         print(f"{i + 1}. {instruction.capitalize()}")
