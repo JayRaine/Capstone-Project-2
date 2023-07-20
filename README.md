@@ -29,7 +29,7 @@ Integrate the user interface with the RecipeManager class. (3 marks)
 ### 4. Documentation and Code Quality (4 marks):
 
 Provide clear and concise documentation for the project, including class descriptions, method explanations, and usage instructions. (2 marks)
-• Ensure the code follows PEP 8 guidelines, including proper naming
+* Ensure the code follows PEP 8 guidelines, including proper naming
 conventions, indentation, and comments. (2 marks)
 
 ### 5. Overall Project Functionality (4 marks):
