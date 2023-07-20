@@ -1,6 +1,7 @@
 # ** Capstone-Project-2 **
 
-Project Title: Online Recipe Management System
+## Project Title: Online Recipe Management System
+
 All group needs to finish both projects
 Project Description:
 The Online Recipe Management System is a Python-based application designed to help users manage and organize their recipes. It incorporates OOP principles and various Python modules to provide a user-friendly interface for users to add, edit, search, and share their favourite recipes. The system allows users to store recipe details such as ingredients, preparation instructions, cooking time, and dietary information.
@@ -37,7 +38,7 @@ conventions, indentation, and comments. (2 marks)
 validation, and usability. (4 marks)
 Total: 50 marks
 
-# ** Project Title:Maze Runner Game **
+## Project Title:Maze Runner Game
 
 The "Maze Runner Game" is an exciting Python project that incorporates the OOP (Object-
 Oriented Programming) principles and provides an engaging experience with different levels
