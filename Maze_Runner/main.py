@@ -16,6 +16,19 @@ class Food:
     def draw(self):
         game_surface.blit(self.img, self.rect)
 
+class Key_Icon:
+    def __init__(self):
+        self.img = pygame.image.load('Maze_Game_Rip/img/key.png').convert_alpha()
+        self.img = pygame.transform.scale(self.img, (TILE - 10, TILE - 10))
+        self.rect = self.img.get_rect()
+        self.set_pos()
+
+    def set_pos(self):
+        self.rect.topleft = randrange(cols) * TILE + 5, randrange(rows) * TILE + 5
+
+    def draw(self):
+        game_surface.blit(self.img, self.rect)
+
 
 def is_collide(x, y):
     tmp_rect = player_rect.move(x, y)
@@ -34,14 +47,27 @@ def eat_food():
             return True
     return False
 
+def collect_key():
+    global has_key
+    for key_icon in key_pos:
+        if player_rect.collidepoint(key_icon.rect.center):
+            key_pos.remove(key_icon)
+            has_key = True
+            return True
+    return False
 
 def restart_game():
-    global time, score, FPS, maze
+    global time, score, FPS, maze, has_key, key_pos
     time, score, FPS = 60, 0, 60
+    has_key = False
     maze = generate_maze()
     update_collision_list()
     player_rect.center = TILE // 2, TILE // 2
     [food.set_pos() for food in food_list]
+    key_pos = [Key_Icon() for i in range(1)]
+    key_pos[0].set_pos()
+    
+    
 
 def check_exit():
     global score, exit_reached  # Declare exit_reached as a global variable
@@ -50,10 +76,12 @@ def check_exit():
     exit_center = exit_cell.x * TILE + TILE // 2, exit_cell.y * TILE + TILE // 2
     player_center = player_rect.center
     distance = ((exit_center[0] - player_center[0]) ** 2 + (exit_center[1] - player_center[1]) ** 2) ** 0.5
-    if distance < TILE:
-        exit_reached = True
-        score += 1
-        restart_game()
+    allowed_distance = TILE // 16
+
+    if distance < allowed_distance and has_key:
+         exit_reached = True
+         score += 1
+         restart_game()
 
 def is_game_over():
     global time, score, record, FPS, last_restart_time  # Declare last_restart_time as global
@@ -64,6 +92,7 @@ def is_game_over():
             restart_game()
             player_rect.center = TILE // 2, TILE // 2
             [food.set_pos() for food in food_list]
+            [Key_Icon.set_pos() for Key_Icon in key_pos]
             set_record(record, score)
             record = get_record()
             time, score, FPS = 60, 0, 60
@@ -84,6 +113,8 @@ def set_record(record, score):
     rec = max(int(record), score)
     with open('record', 'w') as f:
         f.write(str(rec))
+
+has_key = False
 
 FPS = 60
 pygame.init()
@@ -111,6 +142,9 @@ direction = (0, 0)
 
 # food settings
 food_list = [Food() for i in range(3)]
+
+# key settings
+key_pos = [Key_Icon() for i in range(1)]
 
 # collision list
 walls_collide_list = sum([cell.get_rects() for cell in maze], [])
@@ -160,12 +194,27 @@ while True:
     if eat_food():
         FPS += 10
         score += 1
+    
+    # gameplay
+    if collect_key():
+        has_key = True
+    
 
     # draw player
     game_surface.blit(player_img, player_rect)
 
     # draw food
     [food.draw() for food in food_list]
+
+    # draw key
+    [Key_Icon.draw() for Key_Icon in key_pos]
+
+    # Open exit if the player has the key
+    if has_key and not exit_reached and is_game_over():
+        restart_game()
+        exit_reached = False 
+
+
 
     check_exit()
 
