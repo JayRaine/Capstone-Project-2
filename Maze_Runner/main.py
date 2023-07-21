@@ -124,10 +124,11 @@ while True:
     for key, key_value in keys.items():
         if pressed_key[key_value] and not is_collide(*directions[key]):
             direction = directions[key]
-            break
-    if not is_collide(*direction):
+
+    if not is_collide(*direction):  # Move the player only if it doesn't collide with walls
         player_rect.move_ip(direction)
-        break
+
+    # Check if the game is over before calling check_exit()
     if is_game_over():
         restart_game()
         pygame.time.wait(1000)
@@ -139,7 +140,6 @@ while True:
     if eat_food():
         FPS += 10
         score += 1
-    is_game_over()
 
     # draw player
     game_surface.blit(player_img, player_rect)
@@ -157,6 +157,5 @@ while True:
     surface.blit(text_font.render('record:', True, pygame.Color('magenta'), True), (WIDTH + 30, 620))
     surface.blit(font.render(f'{record}', True, pygame.Color('magenta')), (WIDTH + 70, 700))
 
-    # print(clock.get_fps())
     pygame.display.flip()
     clock.tick(FPS)
