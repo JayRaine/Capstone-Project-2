@@ -46,7 +46,7 @@ class RecipeManager:
         if len(results) == 0:
             return None  # If no matching recipes found, return None
         return results  # Return the matching recipes
-
+    
     # Helper functions to search recipes by specific attributes
     def get_recipe_by_title(self, recipe_title):
         return self.get_recipes_by_attributes("title", recipe_title.title())
