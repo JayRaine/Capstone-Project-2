@@ -96,9 +96,8 @@ def generate_maze():
             current_cell = array.pop()
 
     # Set an exit point in the maze (for example, at a random inner cell)
-    exit_cell = grid_cells[randint(1, len(grid_cells) - 2)]
-    exit_cell.walls['right'] = False  # Open the right wall to create an exit
+    exit_cell = grid_cells[-1]
+    exit_cell.walls["right"] = False  # Open the right wall to create an exit
 
     return grid_cells
 
-    return grid_cells

@@ -1,4 +1,6 @@
 from maze_generator import *
+import pygame
+from random import randrange
 
 
 class Food:
@@ -29,30 +31,40 @@ def eat_food():
             return True
     return False
 
-def check_exit():
-    exit_cell = maze[-1]
-    if player_rect.colliderect(exit_cell.get_rects()[0]):
-        restart_game()
 
 def restart_game():
-    global time, score, FPS
+    global time, score, FPS, maze
     time, score, FPS = 60, 0, 60
+    maze = generate_maze()  # Generate a new maze
     player_rect.center = TILE // 2, TILE // 2
     [food.set_pos() for food in food_list]
 
+def check_exit():
+    global score, exit_reached  # Declare exit_reached as a global variable
+
+    exit_cell = maze[-1]  
+    exit_center = exit_cell.x * TILE + TILE // 2, exit_cell.y * TILE + TILE // 2
+    player_center = player_rect.center
+    distance = ((exit_center[0] - player_center[0]) ** 2 + (exit_center[1] - player_center[1]) ** 2) ** 0.5
+    if distance < TILE:
+        exit_reached = True
+        score += 1
+        restart_game()
 
 def is_game_over():
-    global time, score, record, FPS
+    global time, score, record, FPS, last_restart_time  # Declare last_restart_time as global
     if time < 0:
-        pygame.time.wait(700)
-        player_rect.center = TILE // 2, TILE // 2
-        [food.set_pos() for food in food_list]
-        set_record(record, score)
-        record = get_record()
-        time, score, FPS = 60, 0, 60
-        return True  # Indicates that the game is over
+        current_time = pygame.time.get_ticks()
+        if current_time - last_restart_time > 1000:
+            last_restart_time = current_time
+            restart_game()
+            player_rect.center = TILE // 2, TILE // 2
+            [food.set_pos() for food in food_list]
+            set_record(record, score)
+            record = get_record()
+            time, score, FPS = 60, 0, 60
+            return True  # Indicates that the game is over
     return False  # Indicates that the game is not over
-
 
 def get_record():
     try:
@@ -108,7 +120,12 @@ record = get_record()
 font = pygame.font.SysFont('Impact', 150)
 text_font = pygame.font.SysFont('Impact', 80)
 
+last_restart_time = 0
+exit_reached = False
+
 while True:
+    score
+
     surface.blit(bg, (WIDTH, 0))
     surface.blit(game_surface, (0, 0))
     game_surface.blit(bg_game, (0, 0))
@@ -131,7 +148,7 @@ while True:
     # Check if the game is over before calling check_exit()
     if is_game_over():
         restart_game()
-        pygame.time.wait(1000)
+    
 
     # draw maze
     [cell.draw(game_surface) for cell in maze]
