@@ -1,6 +1,6 @@
-from maze_generator import *
 import pygame
 from random import randrange
+from maze_generator import *
 
 
 class Food:
@@ -23,6 +23,9 @@ def is_collide(x, y):
         return False
     return True
 
+def update_collision_list():
+    global walls_collide_list
+    walls_collide_list = sum([cell.get_rects() for cell in maze], [])
 
 def eat_food():
     for food in food_list:
@@ -35,7 +38,8 @@ def eat_food():
 def restart_game():
     global time, score, FPS, maze
     time, score, FPS = 60, 0, 60
-    maze = generate_maze()  # Generate a new maze
+    maze = generate_maze()
+    update_collision_list()
     player_rect.center = TILE // 2, TILE // 2
     [food.set_pos() for food in food_list]
 
@@ -93,6 +97,7 @@ bg = pygame.image.load('Maze_Game_Rip/img/bg_main.jpg').convert()
 
 # get maze
 maze = generate_maze()
+update_collision_list()
 
 # player settings
 player_speed = 5
@@ -100,8 +105,8 @@ player_img = pygame.image.load('Maze_Game_Rip/img/0.png').convert_alpha()
 player_img = pygame.transform.scale(player_img, (TILE - 2 * maze[0].thickness, TILE - 2 * maze[0].thickness))
 player_rect = player_img.get_rect()
 player_rect.center = TILE // 2, TILE // 2
-directions = {'a': (-player_speed, 0), 'd': (player_speed, 0), 'w': (0, -player_speed), 's': (0, player_speed)}
-keys = {'a': pygame.K_a, 'd': pygame.K_d, 'w': pygame.K_w, 's': pygame.K_s}
+directions = {'left': (-player_speed, 0), 'right': (player_speed, 0), 'up': (0, -player_speed), 'down': (0, player_speed)}
+keys = {'left': pygame.K_LEFT, 'right': pygame.K_RIGHT, 'up': pygame.K_UP, 'down': pygame.K_DOWN}
 direction = (0, 0)
 
 # food settings
@@ -124,8 +129,6 @@ last_restart_time = 0
 exit_reached = False
 
 while True:
-    score
-
     surface.blit(bg, (WIDTH, 0))
     surface.blit(game_surface, (0, 0))
     game_surface.blit(bg_game, (0, 0))
