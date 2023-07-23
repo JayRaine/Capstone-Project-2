@@ -5,7 +5,7 @@ from maze_generator import *
 
 class Food:
     def __init__(self):
-        self.img = pygame.image.load('Maze_Game_Rip/img/food.png').convert_alpha()
+        self.img = pygame.image.load('./img/food.png').convert_alpha()
         self.img = pygame.transform.scale(self.img, (TILE - 10, TILE - 10))
         self.rect = self.img.get_rect()
         self.set_pos()
@@ -18,7 +18,7 @@ class Food:
 
 class Key_Icon:
     def __init__(self):
-        self.img = pygame.image.load('Maze_Game_Rip/img/key.png').convert_alpha()
+        self.img = pygame.image.load('./img/key.png').convert_alpha()
         self.img = pygame.transform.scale(self.img, (TILE - 10, TILE - 10))
         self.rect = self.img.get_rect()
         self.set_pos()
@@ -53,12 +53,18 @@ def collect_key():
         if player_rect.collidepoint(key_icon.rect.center):
             key_pos.remove(key_icon)
             has_key = True
+            exit_cell = maze[-1]
+            exit_open(exit_cell)
             return True
     return False
 
 def restart_game():
     global time, score, FPS, maze, has_key, key_pos
-    time, score, FPS = 60, 0, 60
+        time, FPS = 60, 60
+    if score == None:
+        score = 0
+    high_score = get_record()
+    set_record(high_score, score)
     has_key = False
     maze = generate_maze()
     update_collision_list()
@@ -67,7 +73,7 @@ def restart_game():
     key_pos = [Key_Icon() for i in range(1)]
     key_pos[0].set_pos()
     
-    
+
 
 def check_exit():
     global score, exit_reached  # Declare exit_reached as a global variable
@@ -101,17 +107,17 @@ def is_game_over():
 
 def get_record():
     try:
-        with open('record') as f:
+        with open('record.txt', 'r') as f:
             return f.readline()
     except FileNotFoundError:
-        with open('record', 'w') as f:
+        with open('record.txt', 'w') as f:
             f.write('0')
             return 0
 
 
 def set_record(record, score):
     rec = max(int(record), score)
-    with open('record', 'w') as f:
+    with open('record.txt', 'w') as f:
         f.write(str(rec))
 
 has_key = False
@@ -123,8 +129,8 @@ surface = pygame.display.set_mode((WIDTH + 300, HEIGHT))
 clock = pygame.time.Clock()
 
 # images
-bg_game = pygame.image.load('Maze_Game_Rip/img/bg_1.jpg').convert()
-bg = pygame.image.load('Maze_Game_Rip/img/bg_main.jpg').convert()
+bg_game = pygame.image.load('./img/bg_1.jpg').convert()
+bg = pygame.image.load('./img/bg_main.jpg').convert()
 
 # get maze
 maze = generate_maze()
@@ -132,7 +138,7 @@ update_collision_list()
 
 # player settings
 player_speed = 5
-player_img = pygame.image.load('Maze_Game_Rip/img/0.png').convert_alpha()
+player_img = pygame.image.load('./img/0.png').convert_alpha() # convert_alpha to remove background
 player_img = pygame.transform.scale(player_img, (TILE - 2 * maze[0].thickness, TILE - 2 * maze[0].thickness))
 player_rect = player_img.get_rect()
 player_rect.center = TILE // 2, TILE // 2
@@ -219,11 +225,11 @@ while True:
     check_exit()
 
     # draw stats
-    surface.blit(text_font.render('TIME', True, pygame.Color('cyan'), True), (WIDTH + 70, 30))
+    surface.blit(text_font.render('Time', True, pygame.Color('cyan')), (WIDTH + 70, 30))
     surface.blit(font.render(f'{time}', True, pygame.Color('cyan')), (WIDTH + 70, 130))
-    surface.blit(text_font.render('score:', True, pygame.Color('forestgreen'), True), (WIDTH + 50, 350))
+    surface.blit(text_font.render('Score:', True, pygame.Color('forestgreen')), (WIDTH + 50, 350))
     surface.blit(font.render(f'{score}', True, pygame.Color('forestgreen')), (WIDTH + 70, 430))
-    surface.blit(text_font.render('record:', True, pygame.Color('magenta'), True), (WIDTH + 30, 620))
+    surface.blit(text_font.render('Best:', True, pygame.Color('magenta')), (WIDTH + 30, 620))
     surface.blit(font.render(f'{record}', True, pygame.Color('magenta')), (WIDTH + 70, 700))
 
     pygame.display.flip()
