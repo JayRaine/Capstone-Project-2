@@ -150,9 +150,9 @@ clock = pygame.time.Clock()  # Create a clock object
 
 # images
 # Load the background image
-bg_game = pygame.image.load('/Maze_Runner/img/bg_2.jpg').convert()
+bg_game = pygame.image.load('/Maze_Runner/img/bg_main.jpg').convert()
 # Load the background image
-bg = pygame.image.load('/Maze_Runner/img/bg_1.jpg').convert()
+bg = pygame.image.load('/Maze_Runnerimg/bg_1.jpg').convert()
 
 # get maze
 maze = generate_maze()  # Generate the maze and get the maze cells
