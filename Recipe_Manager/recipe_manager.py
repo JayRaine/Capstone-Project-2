@@ -46,7 +46,7 @@ class RecipeManager:
         if len(results) == 0:
             return None  # If no matching recipes found, return None
         return results  # Return the matching recipes
-    
+
     # Helper functions to search recipes by specific attributes
     def get_recipe_by_title(self, recipe_title):
         return self.get_recipes_by_attributes("title", recipe_title.title())
@@ -67,6 +67,24 @@ class RecipeManager:
     # Get recipes by a combination of attributes
     def get_recipes_by_attributes_combination(self, recipe_attributes, recipe_values):
         recipes = []
+        for recipe in self.recipes:
+            # Iterate over each recipe in the list
+            for i, recipe_attribute in enumerate(recipe_attributes):
+                # Check if the attribute is a list
+                if type(getattr(recipe, recipe_attribute)) == list:
+                    # Check if the value is present in the list
+                    if recipe_values[i] in getattr(recipe, recipe_attribute):
+                        # If the value is present, add the recipe to the list of matching recipes
+                        recipes.append(recipe)
+                else:
+                    # Otherwise, directly compare the attribute value with the given value
+                    if getattr(recipe, recipe_attribute) == recipe_values[i]:
+                        # If the attribute value matches the given value, add the recipe to the list of matching recipes
+                        recipes.append(recipe)
+        # Remove duplicate recipes from the list
+        if len(recipes) == 0:
+            return None
+        return recipes
 
     # Update a recipe by its title with a new recipe
 
