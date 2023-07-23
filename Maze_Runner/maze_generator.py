@@ -98,7 +98,8 @@ def generate_maze():
 
     # Set an exit point in the maze (for example, at a random inner cell)
     exit_cell = grid_cells[-1]
-    exit_cell.walls["right"] = False  # Open the right wall to create an exit
-
+    
     return grid_cells
 
+def exit_open(exit_cell):
+    exit_cell.walls["right"] = False # Deletes the cell when the key is collected
