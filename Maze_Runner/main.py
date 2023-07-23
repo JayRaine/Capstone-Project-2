@@ -60,7 +60,11 @@ def collect_key():
 
 def restart_game():
     global time, score, FPS, maze, has_key, key_pos
-    time, score, FPS = 60, 0, 60
+        time, FPS = 60, 60
+    if score == None:
+        score = 0
+    high_score = get_record()
+    set_record(high_score, score)
     has_key = False
     maze = generate_maze()
     update_collision_list()
