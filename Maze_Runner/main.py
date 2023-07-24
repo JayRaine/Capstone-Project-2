@@ -74,13 +74,18 @@ def collect_key():
         if player_rect.collidepoint(key_icon.rect.center):
             key_pos.remove(key_icon)  # Remove the key from the key_pos list
             has_key = True  # Set has_key to True
+            exit_cell = maze[-1]
+            exit_open(exit_cell)
             return True  # Return True if the player collects the key
     return False  # Return False if no key is collected
 
-
 def restart_game():
     global time, score, FPS, maze, has_key, key_pos
-    time, score, FPS = 60, 0, 60
+        time, FPS = 60, 60
+    if score == None:
+        score = 0
+    high_score = get_record()
+    set_record(high_score, score)
     has_key = False
     maze = generate_maze()
     update_collision_list()
@@ -88,6 +93,7 @@ def restart_game():
     [food.set_pos() for food in food_list]
     key_pos = [Key_Icon() for i in range(1)]
     key_pos[0].set_pos()
+    
 
 
 def check_exit():
@@ -126,17 +132,17 @@ def is_game_over():
 
 def get_record():
     try:
-        with open('record') as f:
+        with open('record.txt', 'r') as f:
             return f.readline()
     except FileNotFoundError:
-        with open('record', 'w') as f:
+        with open('record.txt', 'w') as f:
             f.write('0')
             return 0
 
 
 def set_record(record, score):
     rec = max(int(record), score)
-    with open('record', 'w') as f:
+    with open('record.txt', 'w') as f:
         f.write(str(rec))
 
 
@@ -262,3 +268,4 @@ while True:
 
     pygame.display.flip()
     clock.tick(FPS)
+

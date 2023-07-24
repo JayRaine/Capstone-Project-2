@@ -93,7 +93,7 @@ Step-by-Step Tasks:
 ### 6. Optional Enhancements (Bonus): \* Marking: Up to 7 points
 
 -   Add additional game entities (e.g., keys, locked doors) with specific
-    interactions.
+    .interactions
 -   Implement a scoring system based on player performance (e.g., time
     taken, number of moves).
 -   Include visual enhancements using external libraries like Pygame.
