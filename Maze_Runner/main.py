@@ -1,62 +1,83 @@
 import pygame
 from random import randrange
 from maze_generator import *
+import os  # To get the path of the images
 
 
+# food class to generate food
 class Food:
     def __init__(self):
-        self.img = pygame.image.load('./img/food.png').convert_alpha()
+        self.img = pygame.image.load(
+            'Maze_Game_Rip/img/food.png').convert_alpha()  # Load the image
+        # Scale the image to fit the cell
         self.img = pygame.transform.scale(self.img, (TILE - 10, TILE - 10))
-        self.rect = self.img.get_rect()
+        self.rect = self.img.get_rect()  # Get the rect of the image
+        # Set the position of the food to a random position in the maze.
         self.set_pos()
 
+    # Set the position of the food to a random position in the maze that doesn't collide with walls
     def set_pos(self):
-        self.rect.topleft = randrange(cols) * TILE + 5, randrange(rows) * TILE + 5
+        self.rect.topleft = randrange(
+            cols) * TILE + 5, randrange(rows) * TILE + 5
 
+    # Draw the food on the game surface
     def draw(self):
+        # Blit the image on the game surface
         game_surface.blit(self.img, self.rect)
 
+
+# Key class to generate key
 class Key_Icon:
     def __init__(self):
-        self.img = pygame.image.load('./img/key.png').convert_alpha()
+        self.img = pygame.image.load(
+            'Maze_Game_Rip/img/key.png').convert_alpha()  # Load the image
+        # Scale the image to fit the cell
         self.img = pygame.transform.scale(self.img, (TILE - 10, TILE - 10))
-        self.rect = self.img.get_rect()
-        self.set_pos()
+        self.rect = self.img.get_rect()  # Get the rect of the image
+        self.set_pos()  # Set the position of the food so that it doesn't collide with walls
 
     def set_pos(self):
-        self.rect.topleft = randrange(cols) * TILE + 5, randrange(rows) * TILE + 5
+        self.rect.topleft = randrange(
+            cols) * TILE + 5, randrange(rows) * TILE + 5
 
     def draw(self):
         game_surface.blit(self.img, self.rect)
 
 
-def is_collide(x, y):
-    tmp_rect = player_rect.move(x, y)
+def is_collide(x, y):  # Check if the player collides with walls
+    tmp_rect = player_rect.move(x, y)  # Create a temporary rect
+    # Check if the temporary rect collides with any wall
     if tmp_rect.collidelist(walls_collide_list) == -1:
-        return False
-    return True
+        return False  # Return False if it doesn't collide with any wall
+    return True  # Return True if it collides with any wall
 
-def update_collision_list():
-    global walls_collide_list
+
+def update_collision_list():  # Update the collision list when the maze changes
+    global walls_collide_list  # Declare walls_collide_list as a global variable
+    # Update the collision list with the rects of the walls of the maze cells
     walls_collide_list = sum([cell.get_rects() for cell in maze], [])
 
-def eat_food():
-    for food in food_list:
+
+def eat_food():  # Check if the player eats food
+    for food in food_list:  # Iterate through the food list
+        # Check if the player collides with the food if it does
         if player_rect.collidepoint(food.rect.center):
-            food.set_pos()
-            return True
-    return False
+            food.set_pos()  # Set the position of the food to a new position
+            return True  # Return True if the player eats food
+    return False  # Return False if no food is touched
+
 
 def collect_key():
-    global has_key
-    for key_icon in key_pos:
+    global has_key  # Declare has_key as a global variable
+    for key_icon in key_pos:  # Iterate through the key_pos list
+        # Check if the player collides with the key if it does
         if player_rect.collidepoint(key_icon.rect.center):
-            key_pos.remove(key_icon)
-            has_key = True
+            key_pos.remove(key_icon)  # Remove the key from the key_pos list
+            has_key = True  # Set has_key to True
             exit_cell = maze[-1]
             exit_open(exit_cell)
-            return True
-    return False
+            return True  # Return True if the player collects the key
+    return False  # Return False if no key is collected
 
 def restart_game():
     global time, score, FPS, maze, has_key, key_pos
@@ -78,19 +99,22 @@ def restart_game():
 def check_exit():
     global score, exit_reached  # Declare exit_reached as a global variable
 
-    exit_cell = maze[-1]  
+    exit_cell = maze[-1]
     exit_center = exit_cell.x * TILE + TILE // 2, exit_cell.y * TILE + TILE // 2
     player_center = player_rect.center
-    distance = ((exit_center[0] - player_center[0]) ** 2 + (exit_center[1] - player_center[1]) ** 2) ** 0.5
+    distance = ((exit_center[0] - player_center[0]) **
+                2 + (exit_center[1] - player_center[1]) ** 2) ** 0.5
     allowed_distance = TILE // 16
 
     if distance < allowed_distance and has_key:
-         exit_reached = True
-         score += 1
-         restart_game()
+        exit_reached = True
+        score += 1
+        restart_game()
+
 
 def is_game_over():
-    global time, score, record, FPS, last_restart_time  # Declare last_restart_time as global
+    # Declare last_restart_time as global
+    global time, score, record, FPS, last_restart_time
     if time < 0:
         current_time = pygame.time.get_ticks()
         if current_time - last_restart_time > 1000:
@@ -104,6 +128,7 @@ def is_game_over():
             time, score, FPS = 60, 0, 60
             return True  # Indicates that the game is over
     return False  # Indicates that the game is not over
+
 
 def get_record():
     try:
@@ -120,30 +145,37 @@ def set_record(record, score):
     with open('record.txt', 'w') as f:
         f.write(str(rec))
 
+
 has_key = False
 
 FPS = 60
 pygame.init()
-game_surface = pygame.Surface(RES)
-surface = pygame.display.set_mode((WIDTH + 300, HEIGHT))
-clock = pygame.time.Clock()
+game_surface = pygame.Surface(RES)  # Create a game surface
+surface = pygame.display.set_mode((WIDTH + 300, HEIGHT))  # Create a window
+clock = pygame.time.Clock()  # Create a clock object
 
 # images
-bg_game = pygame.image.load('./img/bg_1.jpg').convert()
-bg = pygame.image.load('./img/bg_main.jpg').convert()
+# Load the background image
+bg_game = pygame.image.load('/Maze_Runner/img/bg_main.jpg').convert()
+# Load the background image
+bg = pygame.image.load('/Maze_Runnerimg/bg_1.jpg').convert()
 
 # get maze
-maze = generate_maze()
+maze = generate_maze()  # Generate the maze and get the maze cells
+# Update the collision list with the rects of the walls of the maze cells
 update_collision_list()
 
 # player settings
 player_speed = 5
-player_img = pygame.image.load('./img/0.png').convert_alpha() # convert_alpha to remove background
-player_img = pygame.transform.scale(player_img, (TILE - 2 * maze[0].thickness, TILE - 2 * maze[0].thickness))
+player_img = pygame.image.load('Maze_Game_Rip/img/0.png').convert_alpha()
+player_img = pygame.transform.scale(
+    player_img, (TILE - 2 * maze[0].thickness, TILE - 2 * maze[0].thickness))
 player_rect = player_img.get_rect()
 player_rect.center = TILE // 2, TILE // 2
-directions = {'left': (-player_speed, 0), 'right': (player_speed, 0), 'up': (0, -player_speed), 'down': (0, player_speed)}
-keys = {'left': pygame.K_LEFT, 'right': pygame.K_RIGHT, 'up': pygame.K_UP, 'down': pygame.K_DOWN}
+directions = {'left': (-player_speed, 0), 'right': (player_speed, 0),
+              'up': (0, -player_speed), 'down': (0, player_speed)}
+keys = {'left': pygame.K_LEFT, 'right': pygame.K_RIGHT,
+        'up': pygame.K_UP, 'down': pygame.K_DOWN}
 direction = (0, 0)
 
 # food settings
@@ -191,7 +223,6 @@ while True:
     # Check if the game is over before calling check_exit()
     if is_game_over():
         restart_game()
-    
 
     # draw maze
     [cell.draw(game_surface) for cell in maze]
@@ -200,11 +231,10 @@ while True:
     if eat_food():
         FPS += 10
         score += 1
-    
+
     # gameplay
     if collect_key():
         has_key = True
-    
 
     # draw player
     game_surface.blit(player_img, player_rect)
@@ -218,19 +248,24 @@ while True:
     # Open exit if the player has the key
     if has_key and not exit_reached and is_game_over():
         restart_game()
-        exit_reached = False 
-
-
+        exit_reached = False
 
     check_exit()
 
     # draw stats
-    surface.blit(text_font.render('Time', True, pygame.Color('cyan')), (WIDTH + 70, 30))
-    surface.blit(font.render(f'{time}', True, pygame.Color('cyan')), (WIDTH + 70, 130))
-    surface.blit(text_font.render('Score:', True, pygame.Color('forestgreen')), (WIDTH + 50, 350))
-    surface.blit(font.render(f'{score}', True, pygame.Color('forestgreen')), (WIDTH + 70, 430))
-    surface.blit(text_font.render('Best:', True, pygame.Color('magenta')), (WIDTH + 30, 620))
-    surface.blit(font.render(f'{record}', True, pygame.Color('magenta')), (WIDTH + 70, 700))
+    surface.blit(text_font.render(
+        'TIME', True, pygame.Color('cyan'), True), (WIDTH + 70, 30))
+    surface.blit(font.render(f'{time}', True,
+                 pygame.Color('cyan')), (WIDTH + 70, 130))
+    surface.blit(text_font.render('score:', True, pygame.Color(
+        'forestgreen'), True), (WIDTH + 50, 350))
+    surface.blit(font.render(f'{score}', True, pygame.Color(
+        'forestgreen')), (WIDTH + 70, 430))
+    surface.blit(text_font.render('record:', True,
+                 pygame.Color('magenta'), True), (WIDTH + 30, 620))
+    surface.blit(font.render(f'{record}', True,
+                 pygame.Color('magenta')), (WIDTH + 70, 700))
 
     pygame.display.flip()
     clock.tick(FPS)
+
