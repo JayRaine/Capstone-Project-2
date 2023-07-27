@@ -1,3 +1,4 @@
+
 def print_recipe_details(recipe, recipe_details):
     for recipe_detail in recipe_details:
         detail = getattr(recipe, 'get_'+recipe_detail)()
@@ -25,7 +26,7 @@ class RecipeManager:
         self.recipes = []  # Initialize an empty list to store recipes
 
     def add_recipe(self, recipe):
-        self.recipes.append(recipe)  # Add a recipe to the list of recipes
+        self.recipes.append(recipe)  # Add a recipe to the list of recipes        
 
     def get_all_recipes(self):
         return self.recipes  # Return all recipes
@@ -89,6 +90,7 @@ class RecipeManager:
     # Update a recipe by its title with a new recipe
 
     def update_recipe(self, recipe_title, new_recipe):
+        #recipe_selected = recipe.curselection()
         for recipe in self.recipes:
             # Find the recipe with the matching title and update its attributes
             if recipe.get_title() == recipe_title:
