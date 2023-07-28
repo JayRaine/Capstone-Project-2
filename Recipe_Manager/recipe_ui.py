@@ -485,4 +485,4 @@ search_button = tk.Button(
     # command=recipe_manager.search_recipe('egg_recipe')
 ).pack()
 # run
-window.mainloop()  # displays app until the user closes it
+window.mainloop()  # Run the event loop, displays app until the user closes it
