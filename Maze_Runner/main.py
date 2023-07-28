@@ -1,14 +1,13 @@
 import pygame
 from random import randrange
 from maze_generator import *
-import os  # To get the path of the images
-
-
 # food class to generate food
+
+
 class Food:
     def __init__(self):
         self.img = pygame.image.load(
-            'Maze_Game_Rip/img/food.png').convert_alpha()  # Load the image
+            './img/food.png').convert_alpha()  # Load the image
         # Scale the image to fit the cell
         self.img = pygame.transform.scale(self.img, (TILE - 10, TILE - 10))
         self.rect = self.img.get_rect()  # Get the rect of the image
@@ -30,7 +29,7 @@ class Food:
 class Key_Icon:
     def __init__(self):
         self.img = pygame.image.load(
-            'Maze_Game_Rip/img/key.png').convert_alpha()  # Load the image
+            './img/key.png').convert_alpha()  # Load the image
         # Scale the image to fit the cell
         self.img = pygame.transform.scale(self.img, (TILE - 10, TILE - 10))
         self.rect = self.img.get_rect()  # Get the rect of the image
@@ -79,9 +78,10 @@ def collect_key():
             return True  # Return True if the player collects the key
     return False  # Return False if no key is collected
 
+
 def restart_game():
     global time, score, FPS, maze, has_key, key_pos
-        time, FPS = 60, 60
+    time, FPS = 60, 60
     if score == None:
         score = 0
     high_score = get_record()
@@ -93,7 +93,6 @@ def restart_game():
     [food.set_pos() for food in food_list]
     key_pos = [Key_Icon() for i in range(1)]
     key_pos[0].set_pos()
-    
 
 
 def check_exit():
@@ -156,9 +155,10 @@ clock = pygame.time.Clock()  # Create a clock object
 
 # images
 # Load the background image
-bg_game = pygame.image.load('/Maze_Runner/img/bg_main.jpg').convert()
-# Load the background image
-bg = pygame.image.load('/Maze_Runnerimg/bg_1.jpg').convert()
+bg_game = pygame.image.load(
+    './img/bg_1.jpg').convert()
+bg = pygame.image.load(
+    './img/bg_main.jpg').convert()
 
 # get maze
 maze = generate_maze()  # Generate the maze and get the maze cells
@@ -167,7 +167,8 @@ update_collision_list()
 
 # player settings
 player_speed = 5
-player_img = pygame.image.load('Maze_Game_Rip/img/0.png').convert_alpha()
+player_img = pygame.image.load(
+    './img/0.png').convert_alpha()
 player_img = pygame.transform.scale(
     player_img, (TILE - 2 * maze[0].thickness, TILE - 2 * maze[0].thickness))
 player_rect = player_img.get_rect()
@@ -268,4 +269,3 @@ while True:
 
     pygame.display.flip()
     clock.tick(FPS)
-

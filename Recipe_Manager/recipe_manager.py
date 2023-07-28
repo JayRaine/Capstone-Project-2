@@ -143,7 +143,7 @@ class RecipeManager:
                 break
 
     # This function prints the details of recipes by iterating over a list of recipes.
-    def print_recipes(self, recipes, recipe_attributes):
+    def print_recipes(self, recipes, recipe_attributes=["title", "ingredients", "instructions", "cooking_time", "dietary_info", "equipment"]):
         # Iterate through each recipe in the 'recipes' list.
         for recipe in recipes:
             # Call the 'print_recipe_details' function to print the details of the current recipe.
