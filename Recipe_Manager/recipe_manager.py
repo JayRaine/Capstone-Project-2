@@ -6,19 +6,26 @@ def print_recipe_details(recipe, recipe_details):
             case "title":
                 print(f"Recipe Title: {detail}")
             case "ingredients":
-                print("The ingredients are: \n" +
-                      ', '.join(detail).capitalize())
+                print("The ingredients are: ")
+                print(check_if_list_or_string(detail).capitalize())
             case "instructions":
                 print("The instructions are: ")
-                for i, instruction in enumerate(detail):
-                    print(f"{i + 1}. {instruction.capitalize()}")
+                print(check_if_list_or_string(detail).capitalize())
             case "cooking_time":
                 print(f"This recipe takes {detail} minutes to cook")
             case "dietary_info":
                 print(f"Dietary information: {detail}")
+                print(check_if_list_or_string(detail).capitalize())
             case "equipment":
-                print("The equipment needed is: \n" +
-                      ', '.join(detail).capitalize())
+                print("The equipment needed is: ")
+                print(check_if_list_or_string(detail).capitalize())
+
+
+def check_if_list_or_string(value):
+    if type(value) == list:
+        return '\n'.join(value)
+    else:
+        return value
 
 
 class RecipeManager:
@@ -145,7 +152,7 @@ class RecipeManager:
                 break
 
     # This function prints the details of recipes by iterating over a list of recipes.
-    def print_recipes(self, recipes, recipe_attributes):
+    def print_recipes(self, recipes, recipe_attributes=["title", "ingredients", "instructions", "cooking_time", "dietary_info", "equipment"]):
         # Iterate through each recipe in the 'recipes' list.
         for recipe in recipes:
             # Call the 'print_recipe_details' function to print the details of the current recipe.
