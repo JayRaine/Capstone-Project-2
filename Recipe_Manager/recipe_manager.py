@@ -1,35 +1,131 @@
+import recipes as recipes_dict
+import os 
+current_directory = os.getcwd()
+recipe_folder_path = os.path.join(current_directory, "saved recipes")
+if not os.path.exists(recipe_folder_path):
+    os.mkdir(recipe_folder_path)
+# The is the Recipe class
+class Recipe:
+    def __init__(self, recipe_title, ingredient_list, instruction_list, cooking_time, dietary_info, equipment_list):
+        self.title = recipe_title.title()
+        self.ingredient_list = ingredient_list
+        self.instruction_list = instruction_list
+        self.cooking_time = cooking_time
+        self.dietary_info = dietary_info
+        self.equipment_list = equipment_list
 
-def print_recipe_details(recipe, recipe_details):
-    for recipe_detail in recipe_details:
-        detail = getattr(recipe, 'get_'+recipe_detail)()
-        match recipe_detail:
-            case "title":
-                print(f"Recipe Title: {detail}")
-            case "ingredients":
-                print("The ingredients are: \n" +
-                      ', '.join(detail).capitalize())
-            case "instructions":
-                print("The instructions are: ")
-                for i, instruction in enumerate(detail):
-                    print(f"{i + 1}. {instruction.capitalize()}")
-            case "cooking_time":
-                print(f"This recipe takes {detail} minutes to cook")
-            case "dietary_info":
-                print(f"Dietary information: {detail}")
-            case "equipment":
-                print("The equipment needed is: \n" +
-                      ', '.join(detail).capitalize())
+    # Function for setting the name of the recipe and forcing user input to title case
+    def set_title(self, recipe_title):
+        self.title = recipe_title.title()
+
+    def get_title(self):  # Function for retrieving the name of the recipe
+        return self.title
+
+    # Function for setting the list of ingredients
+    def set_ingredients(self, ingredient_list):
+        self.ingredient_list = ingredient_list
+
+    def get_ingredients(self):  # Function for retrieving the ingredient list
+        return self.ingredient_list
+
+    def get_ingredients_file(self):
+        return ', '.join(self.ingredient_list)
+    
+    # Function for setting the instructions
+    def set_instructions(self, instruction_list):
+        self.instruction_list = instruction_list
+
+    def get_instructions(self):  # Function for retrieving the instructions
+        return self.instruction_list
+
+    def get_instructions_file(self):
+        return ', '.join(self.instruction_list)
+    # Function for setting the cooking time
+    def set_cooking_time(self, cooking_time):
+        self.cooking_time = cooking_time
+
+    def get_cooking_time(self):  # Function for retrieving the cooking time
+        return self.cooking_time
+
+    # Function for setting the dietary info
+    def set_dietary_info(self, dietary_info):
+        self.dietary_info = dietary_info.capitalize()
+
+    def get_dietary_info(self):  # Function for retrieving the dietary info
+        return self.dietary_info
+
+    # Function for setting the equipment needed
+    def set_equipment(self, equipment):
+        self.equipment_list = equipment
+
+    # Function for getting the equipment
+    def get_equipment(self):
+        return self.equipment_list
+    
+    def get_equipment_file(self):
+        return ', '.join(self.equipment_list)
+
+    def get_details(self, details):
+        details_dict = {}
+        for detail in details:
+            match detail:
+                case "title":
+                    details_dict["title"] = self.get_title()
+                case "ingredients":
+                    details_dict["ingredients"] = self.get_ingredients()
+                case "instructions":
+                    details_dict["instructions"] = self.get_instructions()
+                case "cooking_time":
+                    details_dict["cooking_time"] = self.get_cooking_time()
+                case "dietary_info":
+                    details_dict["dietary_info"] = self.get_dietary_info()
+                case "equipment":
+                    details_dict["equipment"] = self.get_equipment()
+        return details_dict
 
 
 class RecipeManager:
     def __init__(self):
-        self.recipes = []  # Initialize an empty list to store recipes
 
+        
+        self.recipes = []  # Initialize an empty list to store recipes
+        
+        i = 0
+        while i < len(recipes_dict.recipes):
+            recipe = Recipe(**recipes_dict.recipes[i])
+            self.add_recipe(recipe)
+            i = i + 1
+
+  
     def add_recipe(self, recipe):
         self.recipes.append(recipe)  # Add a recipe to the list of recipes        
+        self.save_recipe_to_file()
 
+    # This seems to be an infinate loop
+        # temp = {
+        # 'cooking_time': recipe.get_cooking_time(),
+        # 'recipe_title': recipe.get_title(),
+        # 'dietary_info': recipe.get_dietary_info(),
+        # 'ingredient_list': recipe.get_ingredients(),
+        # 'instruction_list': recipe.get_instructions(),
+        # 'equipment_list': recipe.get_equipment()
+        # }
+        # recipes_dict.recipes.append(temp)
+    
     def get_all_recipes(self):
         return self.recipes  # Return all recipes
+    
+    def get_recipe(self, recipe_index): # Return a recipe via the index
+        if recipe_index >= 0 and recipe_index < len(self.recipes):
+            return self.recipes[recipe_index]
+        else:
+            return None
+
+    def check_if_list_or_string(value):
+        if type(value) == list:
+            return '\n'.join(value)
+        else:
+            return value
 
     # Get recipes by a specific attribute
     def get_recipes_by_attributes(self, recipe_attribute, recipe_value):
@@ -82,6 +178,7 @@ class RecipeManager:
                     if getattr(recipe, recipe_attribute) == recipe_values[i]:
                         # If the attribute value matches the given value, add the recipe to the list of matching recipes
                         recipes.append(recipe)
+                        
         # Remove duplicate recipes from the list
         if len(recipes) == 0:
             return None
@@ -100,6 +197,12 @@ class RecipeManager:
                 recipe.set_cooking_time(new_recipe.cooking_time)
                 recipe.set_dietary_info(new_recipe.dietary_info)
                 break
+
+    def update_recipe_ui(self, recipe_index, new_recipe):
+        if recipe_index >= 0 and recipe_index < len(self.recipes):
+            self.recipes[recipe_index] = new_recipe
+        self.save_recipe_to_file()
+        self.save_recipes_to_dict()
 
     # Update specific attribute of a recipe
     def update_recipe_attribute(self, recipe_attribute, recipe_name, new_value):
@@ -143,12 +246,76 @@ class RecipeManager:
             if recipe.get_title() == recipe_title.title():
                 self.recipes.remove(recipe)  # Remove the recipe from the list
                 break
+    
+    def delete_recipe_index(self, recipe_index):
+        if recipe_index >= 0 and recipe_index < len(self.recipes):
+            del self.recipes[recipe_index]
 
     # This function prints the details of recipes by iterating over a list of recipes.
-    def print_recipes(self, recipes, recipe_attributes):
-        # Iterate through each recipe in the 'recipes' list.
-        for recipe in recipes:
-            # Call the 'print_recipe_details' function to print the details of the current recipe.
-            print_recipe_details(recipe, recipe_attributes)
-            # Print a new line after printing the details of each recipe.
-            print("\n")
+    # def print_recipes(self, recipes, recipe_attributes):
+    #     # Iterate through each recipe in the 'recipes' list.
+    #     for recipe in recipes:
+    #         # Call the 'print_recipe_details' function to print the details of the current recipe.
+    #         print_recipe_details(recipe, recipe_attributes)
+    #         # Print a new line after printing the details of each recipe.
+    #         print("\n")
+
+
+
+    
+    def save_recipe_to_file(self):
+        for recipe in self.recipes:
+            filename = os.path.join(recipe_folder_path, f"{recipe.get_title()}.txt")
+            with open(filename, 'w') as f:
+                f.write(f"{recipe.get_title()}\n")
+                f.write(f"{recipe.get_ingredients_file()}\n")
+                f.write(f"{recipe.get_instructions_file()}\n")
+                f.write(f"{recipe.get_cooking_time()}\n")
+                f.write(f"{recipe.get_dietary_info()}\n")
+                f.write(f"{recipe.get_equipment_file()}")
+
+    # Attempting to save recipe to dictionary, seems to crash during runtime
+    def save_recipes_to_dict(self):
+        pass
+
+        
+        #     temp = {
+        #         'cooking_time': recipe.get_cooking_time(),
+        #         'recipe_title': recipe.get_title(),
+        #         'dietary_info': recipe.get_dietary_info(),
+        #         'ingredient_list': recipe.get_ingredients(),
+        #         'instruction_list': recipe.get_instructions(),
+        #         'equipment_list': recipe.get_equipment()
+        #         }
+        #     recipes_dict.recipes.append(temp)
+    
+    def load_recipe_from_file(self, filename):
+        if filename.endswith('txt'):
+                with open(filename) as recipe_file:
+                    lines = recipe_file.readlines()
+                    if len(lines) == 6:
+                        title = lines[0].strip()
+                        ingredients = [ingredient.strip() for ingredient in lines[1].split(",")]
+                        instructions = [instruction.strip() for instruction in lines[2].split(",")]
+                        cooking_time = lines[3].strip()
+                        dietary_info = lines[4].strip()
+                        equipment = [item.strip() for item in lines[5].split(",")]
+                        recipe = Recipe(title, ingredients, instructions, cooking_time, dietary_info, equipment)
+                        self.add_recipe(recipe)
+
+
+
+#   on load if recipe_title = recipe_title.txt
+#   pass
+#   otherwise, load
+#
+#  from Tkinter import Tk     # from tkinter import Tk for Python 3.x
+#  from tkinter.filedialog import askopenfilename
+
+# Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+# filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+# print(filename)
+# #
+# #
+#
+#
