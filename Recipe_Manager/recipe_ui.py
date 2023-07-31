@@ -1,3 +1,4 @@
+# Import necessary modules
 from recipe_manager import *
 from tkinter.filedialog import askopenfilename
 import tkinter as tk
@@ -6,10 +7,11 @@ from tkinter import *
 # This is the main class for the recipe management system
 class RecipeManagementApp:
     def __init__(self, manager):
+        # Initialize the RecipeManagementApp
         self.manager = manager
         self.selected_index = None
         self.window = tk.Tk()
-        self.window.title("Recipe Management System")
+        self.window.title("Recipe Manager")
         self.window.geometry('1100x750')
         self.window.resizable(width=False, height=False) # user can't resize the window
 
@@ -23,7 +25,7 @@ class RecipeManagementApp:
         self.frm_right.grid(row=0, column=1, sticky="N")
 
         # Page title
-        self.lbl_header = tk.Label(self.frm_left, text="Recipe Management System", fg="black", font=("TkMenuFont", 20))
+        self.lbl_header = tk.Label(self.frm_left, text="Recipe Manager", fg="black", font=("TkMenuFont", 20))
         self.lbl_header.grid(row=0, column=0, sticky="W", pady=15, padx=15)
 
         # Button to add a new recipe
@@ -40,7 +42,6 @@ class RecipeManagementApp:
         self.recipes_scrollbar.grid(row=2, column=0, sticky="E")
         self.recipes_listbox.config(yscrollcommand=self.recipes_scrollbar.set)
 
-    
         # Title text box
         self.lbl_recipe_title = tk.Label(self.frm_right, text="Title", font=("TkMenuFont", 15))
         self.txt_recipe_title = tk.Entry(self.frm_right, width=25, bg="white", fg="black")
@@ -93,11 +94,9 @@ class RecipeManagementApp:
         self.btn_delete = tk.Button(self.frm_right, width=15, height=1, relief=tk.RAISED, text="Import recipe", font=("TkMenuFont", 15), cursor="hand2", command=self.load_recipe)
         self.btn_delete.grid(row=5, column=3, padx=70, sticky="S")
 
-        # Refreshing the listbox after importing dictionary
-        self.refresh_recipe_list()
+        # Refreshing the listbox and importing recipes from text files
+        self.load_from_folder()
 
-    def func(self):
-        pass
 
     def clear_entry_boxes(self):
         # Clear the entry boxes
@@ -108,18 +107,22 @@ class RecipeManagementApp:
         self.txt_ingredients.delete('1.0', tk.END)
         self.txt_instructions.delete('1.0', tk.END)
 
-
     # Function to display the selected recipe
     def selected_recipe(self, event):
+        # Get the index of the selected recipe in the listbox
         selected_index = self.recipes_listbox.curselection()
         if selected_index:
             self.selected_index = selected_index[0]
+            # Update the displayed recipe details in the right frame
             self.update_displayed_recipe()
 
     def update_displayed_recipe(self):
+        # Check if a recipe is selected
         if self.selected_index is not None:
+            # Get the selected recipe from the manager
             recipe = self.manager.get_recipe(self.selected_index)
             if recipe:
+                # Clear existing entry boxes
                 self.clear_entry_boxes()
                 # Set other entry boxes with recipe details
                 self.txt_recipe_title.insert(tk.END, recipe.get_title())
@@ -131,20 +134,25 @@ class RecipeManagementApp:
 
     # Function to delete the selected recipe
     def delete_recipe(self):
-         if self.selected_index is not None:
+        if self.selected_index is not None:
+            # Delete the recipe from the manager based on the selected index
             self.manager.delete_recipe_index(self.selected_index)
+            # Refresh the recipe list in the listbox
             self.refresh_recipe_list()
+            # Clear the entry boxes and reset selected_index
             self.clear_entry_boxes()
             self.selected_index = None
 
-    # Refreshes the recipe list
+    # Refreshes the recipe list in the listbox
     def refresh_recipe_list(self):
+        # Clear existing recipes from the listbox
         self.recipes_listbox.delete(0, tk.END)
+        # Get all recipes from the manager and add them to the listbox
         recipes = self.manager.get_all_recipes()
         for recipe in recipes:
             self.recipes_listbox.insert(tk.END, recipe.get_title())
             
-    # taking the info typed in the text boxes and saving it to the recipe list
+    # Function to add a new recipe based on the data entered in the entry boxes
     def add_recipe(self):
         title = self.txt_recipe_title.get()
         ingredients = self.txt_ingredients.get("1.0", tk.END)
@@ -152,38 +160,52 @@ class RecipeManagementApp:
         cooking_time = self.txt_cooking_time.get()
         dietary_info = self.txt_dietary.get()
         equipment = self.txt_equipment.get()
+        # Create a new Recipe instance and add it to the manager
         recipe = Recipe(title, [ingredient.strip() for ingredient in ingredients.split("\n")],
                         [instruction.strip() for instruction in instructions.split("\n")],
                         cooking_time, dietary_info, [equip.strip() for equip in equipment.split(",")])
         self.manager.add_recipe(recipe)
+        # Refresh the recipe list in the listbox
         self.refresh_recipe_list()
+        # Clear the entry boxes and reset selected_index
         self.clear_entry_boxes()
         self.selected_index = None
     
+    # Function to update the selected recipe with the data entered in the entry boxes
     def update_recipe(self):
-         if self.selected_index is not None:
+        if self.selected_index is not None:
             title = self.txt_recipe_title.get()
             ingredients = self.txt_ingredients.get("1.0", tk.END)
             instructions = self.txt_instructions.get("1.0", tk.END)
             cooking_time = self.txt_cooking_time.get()
             dietary_info = self.txt_dietary.get()
             equipment = self.txt_equipment.get()
+            # Create an updated Recipe instance with the new data
             updated_recipe = Recipe(title, [ingredient.strip() for ingredient in ingredients.split("\n")],
-                                        [instruction.strip() for instruction in instructions.split("\n")],
-                                        cooking_time, dietary_info, [equip.strip() for equip in equipment.split(",")])
+                                    [instruction.strip() for instruction in instructions.split("\n")],
+                                    cooking_time, dietary_info, [equip.strip() for equip in equipment.split(",")])
+            # Update the recipe in the manager
             self.manager.update_recipe_ui(self.selected_index, updated_recipe)
+            # Refresh the recipe list in the listbox
             self.refresh_recipe_list()
 
+    # Function to load a recipe from a file
     def load_recipe(self):
+        # Ask the user to select a file and get the filename
         filename = tk.filedialog.askopenfilename()
-        self.manager.load_recipe_from_file(filename)
+        # Load the recipe from the selected file and add it to the manager
+        self.manager.load_recipe_from_file_selected(filename)
+        # Refresh the recipe list in the listbox
         self.refresh_recipe_list()
 
-# Create a RecipeManager instance and pass it to the app
+    def load_from_folder(self):
+        self.manager.load_recipes_from_folder()
+        self.refresh_recipe_list()
 
+
+# Create a RecipeManager instance and pass it to the app
 recipe_manager = RecipeManager()  # You should initialize this with your specific implementation
 app = RecipeManagementApp(recipe_manager)
-
 
 # Run the event loop, display the app until the user closes it
 app.window.mainloop()
