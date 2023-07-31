@@ -1,5 +1,14 @@
 import os
+import json
+from recipe import Recipe
 
+current_directory = os.getcwd()
+
+
+# Create the "recipe folder" in the current working directory
+recipe_folder_path = os.path.join(current_directory, "recipe folder")
+if not os.path.exists(recipe_folder_path):
+    os.mkdir(recipe_folder_path)
 # **********# for testing purposes #**********#
 
 
@@ -43,6 +52,7 @@ class RecipeManager:
 
     def add_recipe(self, recipe):
         self.recipes.append(recipe)  # Add a recipe to the list of recipes
+        self.save_recipes_to_file()  # Save the recipe to a file
 
     def get_all_recipes(self):
         return self.recipes  # Return all recipes
@@ -153,50 +163,27 @@ class RecipeManager:
         self.update_recipe_attribute(
             "equipment", recipe_title, new_equipment)
 
-    # Delete a recipe by its title
-    def delete_recipe(self, recipe_title):
-        for recipe in self.recipes:
-            if recipe.get_title() == recipe_title.title():
-                self.recipes.remove(recipe)  # Remove the recipe from the list
-                break
+    def delete_recipe(self, recipe):
+        self.recipes.remove(recipe)
+        self.save_recipes_to_file()
 
     # get recipe details
-    def get_recipe(self, recipe, recipe_attributes=["title", "ingredients", "instructions", "cooking_time", "dietary_info", "equipment"]):
+
+    def get_recipe(self, recipe, recipe_attributes=["title", "ingredient_list", "instruction_list", "cooking_time", "dietary_info", "equipment_list"]):
         return recipe.get_recipe_details(recipe_attributes)
 
-        # print(recipe.get_details(recipe_attributes))
-        # print("\n")
-        # print(recipe)
-        # return recipe.get_details(recipe_attributes)
+    def save_recipes_to_file(self):
+        recipe_list = [recipe.get_recipe_details() for recipe in self.recipes]
+        data = {'recipes': recipe_list}
+        with open("recipes.json", "w") as file:
+            json.dump(data, file)
 
-    # def save_recipes_to_file(self):
-    #     with open("recipes.txt", "w") as file:
-    #         for recipe in self.recipes:
-    #             file.write(recipe.get_details() + "\n")
+    def load_recipes_from_file(self):
+        with open("recipes.json", "r") as file:
+            data = json.load(file)
 
-    #     def save_recipes(self):
-    #     for recipe in self.recipes:
-    #         filename = os.path.join(recipe_folder_path, f"{recipe.get_title()}.txt")
-    #         with open(filename, 'w') as file:
-    #             file.write(f"{recipe.get_title()}\n")
-    #             file.write(f"{recipe.get_ingredients()}\n")
-    #             file.write(f"{recipe.get_instructions()}\n")
-    #             file.write(f"{recipe.get_cooking_time()}\n")
-    #             file.write(f"{recipe.get_dietary_info()}\n")
-
-    # def load_recipes_from_file(self):
-    #     with open("recipes.txt", "r") as file:
-    #         for line in file:
-    #             recipe_details = line.split(",")
-    #             recipe_title = recipe_details[0]
-    #             recipe_ingredients = recipe_details[1]
-    #             recipe_instructions = recipe_details[2]
-    #             recipe_cooking_time = recipe_details[3]
-    #             recipe_dietary_info = recipe_details[4]
-    #             recipe_equipment = recipe_details[5]
-    #             recipe = Recipe(recipe_title, recipe_ingredients, recipe_instructions,
-    #                             recipe_cooking_time, recipe_dietary_info, recipe_equipment)
-    #             self.recipes.append(recipe)
+        recipe_list = data['recipes']
+        self.recipes = [Recipe(**recipe) for recipe in recipe_list]
 
     # **********# for testing purposes #**********#
 

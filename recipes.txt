@@ -1,10 +1,2 @@
-Title: gfhfgh
-Ingredients: grrd
-Instructions: dfgdrh
-
-hyy
-
-
-Cook Time: 34
-Dietary: rg
----
+{'title': 'Viyvy', 'ingredients': ['viycv', 'vkhvkv', 'vhkh'], 'instructions': 'yici', 'cooking_time': 'uovv', 'dietary_info': ['yiv', 'hvk', 'dz'], 'equipment': ['iv', 'hvkhvk', 'vhk']}
+{'title': 'Gcjg', 'ingredients': ['viycv', 'vkhvkv', 'vhkh'], 'instructions': 'vhkh', 'cooking_time': 'vhk', 'dietary_info': ['yiv', 'hvk', 'dz'], 'equipment': ['iv', 'hvkhvk', 'vhk']}

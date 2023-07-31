@@ -67,23 +67,23 @@ def create_add_recipe_preview(parent):
             text="Equipment: " + ', '.join(equipmentList).capitalize())
 
     def add_recipe():  # function to add recipe to the recipe manager
-        recipe_title = title.get()
-        ingredients_list = ingredientsList
-        instructions_list = instructionsList
+        title = recipe_title.get()
+        ingredients_list = ingredientsList.copy()
+        instructions_list = instructions.get("1.0", "end-1c")
         cooking_time = cookingTime.get()
-        dietary_info = dietaryInfoList
-        recipe_equipament_list = equipmentList
+        dietary_info = dietaryInfoList.copy()
+        recipe_equipament_list = equipmentList.copy()
 
         # Create a recipe object
-        recipe = Recipe(recipe_title, ingredients_list, instructions_list,
+        recipe = Recipe(title, ingredients_list, instructions_list,
                         cooking_time, dietary_info, recipe_equipament_list)
         # Add the recipe to the recipe manager
         recipe_manager.add_recipe(recipe)
 
         # Clear the input fields
-        title.delete(0, "end")
+        recipe_title.delete(0, "end")
         ingredients.delete(0, "end")
-        instructions.delete(0, "end")
+        instructions.delete("1.0", "end")
         cookingTime.delete(0, "end")
         dietaryInfo.delete(0, "end")
         recipe_equipament.delete(0, "end")
@@ -92,11 +92,11 @@ def create_add_recipe_preview(parent):
         preview_instructions.config(text="Instructions: ")
         preview_dietary_info.config(text="Dietary Information: ")
         preview_equipment.config(text="Equipment: ")
-
-        # save the recipe to the file
-        # recipe_manager.save_recipes_to_file()
-
-    # save recipe function
+        # clear the lists
+        ingredientsList.clear()
+        instructionsList.clear()
+        dietaryInfoList.clear()
+        equipmentList.clear()
 
     # input widget
 
@@ -108,13 +108,14 @@ def create_add_recipe_preview(parent):
              font=("TkMenuFont", 15)  # Setting font type and size
              ).pack()  # Pack method to organise
     # Entry widget for title input
-    title = tk.Entry(parent,
-                     width=50,
-                     background="white",  # Setting label background colour
-                     foreground="black",  # Setting text colour
-                     font=("TkMenuFont", 15)  # Setting font type and size
-                     )
-    title.pack()  # Pack method to organise
+    recipe_title = tk.Entry(parent,
+                            width=50,
+                            background="white",  # Setting label background colour
+                            foreground="black",  # Setting text colour
+                            # Setting font type and size
+                            font=("TkMenuFont", 15)
+                            )
+    recipe_title.pack()  # Pack method to organise
 
     # Ingredients
     tk.Label(parent,
@@ -174,31 +175,32 @@ def create_add_recipe_preview(parent):
              font=("TkMenuFont", 15)  # Setting font type and size
              ).pack()  # Pack method to organise
     # Entry widget for instructions input
-    instructions = tk.Entry(parent,
-                            width=50,
-                            background="white",  # Setting label background colour
-                            foreground="black",  # Setting text colour
-                            # Setting font type and size
-                            font=("TkMenuFont", 15)
-                            )
+    instructions = tk.Text(parent,
+                           width=50,
+                           height=4,
+                           background="white",  # Setting label background colour
+                           foreground="black",  # Setting text colour
+                           # Setting font type and size
+                           font=("TkMenuFont", 15)
+                           )
     instructions.pack()  # Pack method to organise
 
     # add instructions button
-    add_instructions_button = tk.Button(
-        parent,
-        width=15,
-        height=1,
-        text="Add instructions",  # Text shown on button
-        font=("TkMenuFont", 15),  # Setting font type and size
-        background="pink",  # Setting button background colour
-        foreground="black",  # Setting text colour
-        cursor="hand2",  # Change the cursor to the hand
-        activebackground="#badee2",  # Changes background colour when cursor click
-        activeforeground="black",  # Changes font colour when cursor click
-        # Function which runs every time the button is pressed
-        command=add_instructions
-    )
-    add_instructions_button.pack()
+    # add_instructions_button = tk.Button(
+    #     parent,
+    #     width=15,
+    #     height=1,
+    #     text="Add instructions",  # Text shown on button
+    #     font=("TkMenuFont", 15),  # Setting font type and size
+    #     background="pink",  # Setting button background colour
+    #     foreground="black",  # Setting text colour
+    #     cursor="hand2",  # Change the cursor to the hand
+    #     activebackground="#badee2",  # Changes background colour when cursor click
+    #     activeforeground="black",  # Changes font colour when cursor click
+    #     # Function which runs every time the button is pressed
+    #     command=add_instructions
+    # )
+    # add_instructions_button.pack()
 
     # preview instructions on screen
     preview_instructions = tk.Label(parent,

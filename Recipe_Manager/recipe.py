@@ -1,6 +1,6 @@
 class Recipe:
-    def __init__(self, recipe_title, ingredient_list, instruction_list, cooking_time, dietary_info, equipment_list):
-        self.title = recipe_title.title()
+    def __init__(self, title, ingredient_list, instruction_list, cooking_time, dietary_info, equipment_list):
+        self.title = title.title()
         self.ingredient_list = ingredient_list
         self.instruction_list = instruction_list
         self.cooking_time = cooking_time
@@ -79,15 +79,15 @@ class Recipe:
                 case "title":
                     details_dict["title"] = self.get_title()
                 case "ingredients":
-                    details_dict["ingredients"] = self.get_ingredients()
+                    details_dict["ingredient_list"] = self.get_ingredients()
                 case "instructions":
-                    details_dict["instructions"] = self.get_instructions()
+                    details_dict["instruction_list"] = self.get_instructions()
                 case "cooking_time":
                     details_dict["cooking_time"] = self.get_cooking_time()
                 case "dietary_info":
                     details_dict["dietary_info"] = self.get_dietary_info()
                 case "equipment":
-                    details_dict["equipment"] = self.get_equipment()
+                    details_dict["equipment_list"] = self.get_equipment()
                 case _:
                     print("Invalid detail type entered")
         return details_dict

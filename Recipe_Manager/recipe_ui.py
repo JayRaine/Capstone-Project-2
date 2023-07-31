@@ -18,6 +18,9 @@ from search_recipe_ui import create_search_recipe_preview
 # Change the current working directory to the directory of this file
 current_directory = os.getcwd()
 
+recipe_manager = RecipeManager()
+recipe_manager.load_recipes_from_file()
+
 
 def switch_preview(preview_type):
     # Remove the current right-side content
