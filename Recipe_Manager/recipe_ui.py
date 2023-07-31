@@ -1,8 +1,37 @@
-from recipe import Recipe  # Import the Recipe class from recipe.py
-# Import the RecipeManager class from recipe_manager.py
+
+import tkinter as tk
+from PIL import ImageTk, Image
+import os  # Used to get the current working directory
+
+
+from recipe import Recipe
 from recipe_manager import RecipeManager
 from recipes import recipes  # Import the 'recipes' dictionary from recipes.py
-import tkinter as tk
+
+# Import the functions from the other UI files
+from add_recipe_ui import create_add_recipe_preview
+from view_all_recipes_ui import create_view_all_recipes_preview
+from update_recipe_ui import create_update_recipe_preview
+from search_recipe_ui import create_search_recipe_preview
+
+
+# Change the current working directory to the directory of this file
+current_directory = os.getcwd()
+
+
+def switch_preview(preview_type):
+    # Remove the current right-side content
+    for widget in frame_right.winfo_children():
+        widget.destroy()
+
+    if preview_type == "Add Recipe":
+        create_add_recipe_preview(frame_right)
+    elif preview_type == "View All Recipes":
+        create_view_all_recipes_preview(frame_right)
+    elif preview_type == "Update Recipe":
+        create_update_recipe_preview(frame_right)
+    elif preview_type == "search_recipe":
+        create_search_recipe_preview(frame_right)
 
 
 # initiallize
@@ -24,6 +53,30 @@ frame_left = tk.Frame(window,
 frame_left.grid(row=0, column=0)
 frame_left.pack_propagate(False)  # background colour to all page
 
+# Adding a logo to the left frame
+logo = ImageTk.PhotoImage(Image.open(
+    current_directory + "/Recipe_Manager/logo.png"))
+logo_label = tk.Label(frame_left, image=logo, width=200, height=150)
+logo_label.pack(pady=10)
+
+
+# Adding buttons to the left frame
+preview_options = ["Add Recipe", "View All Recipes",
+                   "Update Recipe", "search_recipe"]
+for option in preview_options:
+
+    tk.Button(frame_left, text=option,
+              width=15,
+              height=3,
+              background="#d1163c",
+              foreground="white",
+              cursor="hand2",
+              activebackground="#badee2",
+              activeforeground="black",
+              font=("TkMenuFont", 13, "bold"),
+              command=lambda opt=option: switch_preview(opt)).pack(pady=5)
+
+
 frame_right = tk.Frame(window,
                        width=700,
                        height=7250,
@@ -32,107 +85,13 @@ frame_right = tk.Frame(window,
 frame_right.grid(row=0, column=1)
 frame_right.pack_propagate(False)  # background colour to all page
 
-# frame_right widgets
-# logo_img = ImageTk.PhotoImage(Image.open('logo.png').convert('RGB'))
-# logo_widget = tk.Label(frame_right, image = logo_img) # converting to widget, tkinter doesn't have an specific
-# logo_widget.image = logo_img
-# logo_widget.pack() #place widget in frame
-
-# Instructions widget
-tk.Label(frame_left,
-         width=25,  # Setting label width
-         height=3,
-         text="Recipe Management System",
-         background=bg_colour,  # Setting label background colour
-         foreground="white",  # Setting text colour
-         font=("TkMenuFont", 13)  # Setting font type and size
-         ).pack()  # Pack method to organise
-
-
-recipe1 = Recipe(**recipes['egg_recipe'])
+# Initialize with the first preview option
+switch_preview(preview_options[0])
 
 
 # Initialize recipe manager
 recipe_manager = RecipeManager()
 # ****** In progress*********#
-
-# Create a list to store ingredients
-ingredientsList = []
-# Create a list to store instructions
-instructionsList = []
-# Create a list to store dietary information
-dietaryInfoList = []
-# Create a list to store equipment
-equipmentList = []
-
-# functions to add attribute [ingredient, instruction etc] and update the preview
-
-
-def add_ingredients():
-    ingredientsList.append(ingredients.get())
-    ingredients.delete(0, "end")  # Clear the input field
-    # Call the update_preview() function to update the preview
-    update_ingrediants_preview()
-
-
-def add_instructions():
-    instructionsList.append(instructions.get())
-    instructions.delete(0, "end")  # Clear the input field
-    # Call the update_preview() function to update the preview
-    update_instructions_preview()
-
-
-def add_dietary_info():
-    dietaryInfoList.append(dietaryInfo.get())
-    dietaryInfo.delete(0, "end")  # Clear the input field
-    # Call the update_preview() function to update the preview
-    update_dietary_info_preview()
-
-
-def add_equipment():
-    equipmentList.append(recipe_equipament.get())
-    recipe_equipament.delete(0, "end")  # Clear the input field
-    # Call the update_preview() function to update the preview
-    update_equipment_preview()
-
-
-# functions to update the preview after adding ingredients or instructions etc
-
-
-def update_ingrediants_preview():
-    # Update the text attribute of the label with the current list of ingredients
-    preview_ingredients.config(
-        text="Ingredients: " + ', '.join(ingredientsList).capitalize())
-
-
-def update_instructions_preview():
-    # Update the text attribute of the label with the current list of instructions
-    preview_instructions.config(
-        text="Instructions: " + ', '.join(instructionsList).capitalize())
-
-
-def update_dietary_info_preview():
-    # Update the text attribute of the label with the current list of dietary information
-    preview_dietary_info.config(
-        text="Dietary Information: " + ', '.join(dietaryInfoList).capitalize())
-
-
-def update_equipment_preview():
-    # Update the text attribute of the label with the current list of equipment
-    preview_equipment.config(
-        text="Equipment: " + ', '.join(equipmentList).capitalize())
-
-
-def add_recipe():  # function to add recipe to the recipe manager
-    recipe_title = title.get()
-    ingredients_list = ingredientsList
-    instructions_list = instructionsList
-    cooking_time = cookingTime.get()
-    dietary_info = dietaryInfoList
-    recipe_equipament_list = equipmentList
-    recipe = Recipe(recipe_title, ingredients_list, instructions_list,
-                    cooking_time, dietary_info, recipe_equipament_list)
-    recipe_manager.add_recipe(recipe)
 
 
 def get_all_recipes():  # function to get all recipes from the recipe manager
@@ -171,288 +130,6 @@ def delete_recipe():
     print("Hello")
 
 
-# input widget
-
-# Title
-tk.Label(frame_right,
-         text="Title",  # Text shown on label
-         background=bg_colour2,  # Setting label background colour
-         foreground="black",  # Setting text colour
-         font=("TkMenuFont", 15)  # Setting font type and size
-         ).pack()  # Pack method to organise
-# Entry widget for title input
-title = tk.Entry(frame_right,
-                 width=50,
-                 background="white",  # Setting label background colour
-                 foreground="black",  # Setting text colour
-                 font=("TkMenuFont", 15)  # Setting font type and size
-                 )
-title.pack()  # Pack method to organise
-
-
-# Ingredients
-tk.Label(frame_right,
-         width=50,  # Setting label width
-         height=1,
-         text="Ingredients",  # Text shown on label
-         background=bg_colour2,  # Setting label background colour
-         foreground="black",  # Setting text colour
-         font=("TkMenuFont", 15)  # Setting font type and size
-         ).pack()  # Pack method to organise
-# Entry widget for ingredients input
-ingredients = tk.Entry(frame_right,
-                       width=50,
-                       background="white",  # Setting label background colour
-                       foreground="black",  # Setting text colour
-                       font=("TkMenuFont", 15)  # Setting font type and size
-                       )
-ingredients.pack()  # Pack method to organise
-
-# add ingredients button
-add_ingredients_button = tk.Button(
-    frame_right,
-    width=15,
-    height=1,
-    text="Add ingredients",  # Text shown on button
-    font=("TkMenuFont", 15),  # Setting font type and size
-    background="pink",  # Setting button background colour
-    foreground="black",  # Setting text colour
-    cursor="hand2",  # Change the cursor to the hand
-    activebackground="#badee2",  # Changes background colour when cursor click
-    activeforeground="black",  # Changes font colour when cursor click
-    # Function which runs every time the button is pressed
-    command=add_ingredients
-)
-add_ingredients_button.pack()
-
-# preview ingredients on screen
-preview_ingredients = tk.Label(frame_right,
-                               width=50,
-                               height=1,
-                               text="",  # Text shown on label
-                               background=bg_colour2,  # Setting label background colour
-                               foreground="black",  # Setting text colour
-                               # Setting font type and size
-                               font=("TkMenuFont", 15)
-                               )
-preview_ingredients.pack()  # Pack method to organise
-
-
-# Instructions
-tk.Label(frame_right,
-         width=50,  # Setting label width
-         height=1,
-         text="Instructions",  # Text shown on label
-         background=bg_colour2,  # Setting label background colour
-         foreground="black",  # Setting text colour
-         font=("TkMenuFont", 15)  # Setting font type and size
-         ).pack()  # Pack method to organise
-# Entry widget for instructions input
-instructions = tk.Entry(frame_right,
-                        width=50,
-                        background="white",  # Setting label background colour
-                        foreground="black",  # Setting text colour
-                        font=("TkMenuFont", 15)  # Setting font type and size
-                        )
-instructions.pack()  # Pack method to organise
-
-# add instructions button
-add_instructions_button = tk.Button(
-    frame_right,
-    width=15,
-    height=1,
-    text="Add instructions",  # Text shown on button
-    font=("TkMenuFont", 15),  # Setting font type and size
-    background="pink",  # Setting button background colour
-    foreground="black",  # Setting text colour
-    cursor="hand2",  # Change the cursor to the hand
-    activebackground="#badee2",  # Changes background colour when cursor click
-    activeforeground="black",  # Changes font colour when cursor click
-    # Function which runs every time the button is pressed
-    command=add_instructions
-)
-add_instructions_button.pack()
-
-# preview instructions on screen
-preview_instructions = tk.Label(frame_right,
-                                width=50,
-                                height=1,
-                                text="",  # Text shown on label
-                                background=bg_colour2,  # Setting label background colour
-                                foreground="black",  # Setting text colour
-                                # Setting font type and size
-                                font=("TkMenuFont", 15)
-                                )
-preview_instructions.pack()  # Pack method to organise
-
-
-# Cooking time
-tk.Label(frame_right,
-         width=50,  # Setting label width
-         height=1,
-         text="Cooking time",  # Text shown on label
-         background=bg_colour2,  # Setting label background colour
-         foreground="black",  # Setting text colour
-         font=("TkMenuFont", 15)  # Setting font type and size
-         ).pack()  # Pack method to organise
-# Entry widget for cooking time input
-cookingTime = tk.Entry(frame_right,
-                       width=50,
-                       background="white",  # Setting label background colour
-                       foreground="black",  # Setting text colour
-                       font=("TkMenuFont", 15)  # Setting font type and size
-                       )
-cookingTime.pack()  # Pack method to organise
-
-
-# Dietary info
-tk.Label(frame_right,
-         width=50,  # Setting label width
-         height=1,
-         text="Dietary info",  # Text shown on label
-         background=bg_colour2,  # Setting label background colour
-         foreground="black",  # Setting text colour
-         font=("TkMenuFont", 15)  # Setting font type and size
-         ).pack()  # Pack method to organise
-# Entry widget for dietary info input
-dietaryInfo = tk.Entry(frame_right,
-                       width=50,
-                       background="white",  # Setting label background colour
-                       foreground="black",  # Setting text colour
-                       font=("TkMenuFont", 15)  # Setting font type and size
-                       )
-dietaryInfo.pack()  # Pack method to organise
-
-# add dietary info button
-add_dietary_info_button = tk.Button(
-    frame_right,
-    width=15,
-    height=1,
-    text="Add dietary info",  # Text shown on button
-    font=("TkMenuFont", 15),  # Setting font type and size
-    background="pink",  # Setting button background colour
-    foreground="black",  # Setting text colour
-    cursor="hand2",  # Change the cursor to the hand
-    activebackground="#badee2",  # Changes background colour when cursor click
-    activeforeground="black",  # Changes font colour when cursor click
-    # Function which runs every time the button is pressed
-    command=add_dietary_info
-)
-add_dietary_info_button.pack()
-
-# preview dietary info on screen
-preview_dietary_info = tk.Label(frame_right,
-                                width=50,
-                                height=1,
-                                text="",  # Text shown on label
-                                background=bg_colour2,  # Setting label background colour
-                                foreground="black",  # Setting text colour
-                                # Setting font type and size
-                                font=("TkMenuFont", 15)
-                                )
-preview_dietary_info.pack()  # Pack method to organise
-
-
-# Recipe equipament
-tk.Label(frame_right,
-         width=50,  # Setting label width
-         height=1,
-         text="Recipe equipament",  # Text shown on label
-         background=bg_colour2,  # Setting label background colour
-         foreground="black",  # Setting text colour
-         font=("TkMenuFont", 15)  # Setting font type and size
-         ).pack()  # Pack method to organise
-# Entry widget for recipe equipament input
-recipe_equipament = tk.Entry(frame_right,
-                             width=50,
-                             background="white",  # Setting label background colour
-                             foreground="black",  # Setting text colour
-                             # Setting font type and size
-                             font=("TkMenuFont", 15)
-                             )
-recipe_equipament.pack()  # Pack method to organise
-
-# add recipe equipament button
-add_recipe_equipament_button = tk.Button(
-    frame_right,
-    width=15,
-    height=1,
-    text="Add equipament",  # Text shown on button
-    font=("TkMenuFont", 15),  # Setting font type and size
-    background="pink",  # Setting button background colour
-    foreground="black",  # Setting text colour
-    cursor="hand2",  # Change the cursor to the hand
-    activebackground="#badee2",  # Changes background colour when cursor click
-    activeforeground="black",  # Changes font colour when cursor click
-    # Function which runs every time the button is pressed
-    command=add_equipment
-)
-add_recipe_equipament_button.pack()
-
-# preview recipe equipament on screen
-preview_equipment = tk.Label(frame_right,
-                             width=50,
-                             height=1,
-                             text="",  # Text shown on label
-                             background=bg_colour2,  # Setting label background colour
-                             foreground="black",  # Setting text colour
-                             # Setting font type and size
-                             font=("TkMenuFont", 15)
-                             )
-preview_equipment.pack()  # Pack method to organise
-
-
-# Buttons widget
-# Button to add a new recipe
-add_button = tk.Button(
-    frame_left,
-    width=15,
-    height=1,
-    text="Add a new recipe",  # Text shown on button
-    font=("TkMenuFont", 15),  # Setting font type and size
-    background="pink",  # Setting button background colour
-    foreground="black",  # Setting text colour
-    cursor="hand2",  # Change the cursor to the hand
-    activebackground="#badee2",  # Changes background colour when cursor click
-    activeforeground="black",  # Changes font colour when cursor click
-    # Function which runs every time the button is pressed
-    command=add_recipe
-)
-add_button.pack()
-
-# Button to view all recipes
-get_all_button = tk.Button(
-    frame_left,
-    width=15,
-    height=1,
-    text="View all recipes",  # Text shown on button
-    font=("TkMenuFont", 15),  # Setting font type and size
-    background="pink",  # Setting button background colour
-    foreground="black",  # Setting text colour
-    cursor="hand2",  # Change the cursor to the hand
-    activebackground="#badee2",  # Changes background colour when cursor click
-    activeforeground="black",  # Changes font colour when cursor click
-    # Function which runs every time the button is pressed get_all_recipes and prints on screen
-    command=get_all_recipes
-)
-get_all_button.pack()
-
-# Button to edit a recipe
-update_button = tk.Button(
-    frame_left,
-    width=15,
-    height=1,
-    text="Update a recipe",  # Text shown on button
-    font=("TkMenuFont", 15),  # Setting font type and size
-    background="pink",  # Setting button background colour
-    foreground="black",  # Setting text colour
-    cursor="hand2",  # Change the cursor to the hand
-    activebackground="#badee2",  # Changes background colour when cursor click
-    activeforeground="black",  # Changes font colour when cursor click
-    # Function which runs every time the button is pressed
-    # command=update_recipe(title, attribute)
-).pack()
-
 # Button to delete a recipe
 delete_button = tk.Button(
     frame_left,
@@ -469,20 +146,6 @@ delete_button = tk.Button(
     # command=recipe_manager.delete_recipe('egg_recipe')
 ).pack()
 
-# Button to search a recipe
-search_button = tk.Button(
-    frame_left,
-    width=15,
-    height=1,
-    text="Search a recipe",  # Text shown on button
-    font=("TkMenuFont", 15),  # Setting font type and size
-    background="pink",  # Setting button background colour
-    foreground="black",  # Setting text colour
-    cursor="hand2",  # Change the cursor to the hand
-    activebackground="#badee2",  # Changes background colour when cursor click
-    activeforeground="black",  # Changes font colour when cursor click
-    # Function which runs every time the button is pressed
-    # command=recipe_manager.search_recipe('egg_recipe')
-).pack()
+
 # run
 window.mainloop()  # Run the event loop, displays app until the user closes it

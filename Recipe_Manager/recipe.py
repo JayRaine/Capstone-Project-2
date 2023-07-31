@@ -50,8 +50,30 @@ class Recipe:
     def get_equipment(self):
         return self.equipment_list
 
-    def get_details(self, details):
+    # def get_detail(self, detail):
+    #     if type(details) == str:
+    #         details = [details]
+    #     match detail:
+    #         case "title":
+    #             return self.get_title()
+    #         case "ingredients":
+    #             return self.get_ingredients()
+    #         case "instructions":
+    #             return self.get_instructions()
+    #         case "cooking_time":
+    #             return self.get_cooking_time()
+    #         case "dietary_info":
+    #             return self.get_dietary_info()
+    #         case "equipment":
+    #             return self.get_equipment()
+    #         case _:
+    #             print("Invalid detail type entered")
+    #             return None
+
+    def get_recipe_details(self, details=['title', 'ingredients', 'instructions', 'cooking_time', 'dietary_info', 'equipment']):
         details_dict = {}
+        if type(details) == str:
+            details = [details]
         for detail in details:
             match detail:
                 case "title":
@@ -66,4 +88,28 @@ class Recipe:
                     details_dict["dietary_info"] = self.get_dietary_info()
                 case "equipment":
                     details_dict["equipment"] = self.get_equipment()
+                case _:
+                    print("Invalid detail type entered")
         return details_dict
+
+    # def get_recipe_to_preview(self, details):
+    #     details_dict = {}
+    #     if type(details) == str:
+    #         details = [details]
+    #     for detail in details:
+    #         match detail:
+    #             case "title":
+    #                 f"Recipe Title: {detail}"
+    #             case "ingredients":
+    #                 details_dict["ingredients"] = self.get_ingredients()
+    #             case "instructions":
+    #                 details_dict["instructions"] = self.get_instructions()
+    #             case "cooking_time":
+    #                 details_dict["cooking_time"] = self.get_cooking_time()
+    #             case "dietary_info":
+    #                 details_dict["dietary_info"] = self.get_dietary_info()
+    #             case "equipment":
+    #                 details_dict["equipment"] = self.get_equipment()
+    #             case _:
+    #                 print("Invalid detail type entered")
+    #     return details_dict

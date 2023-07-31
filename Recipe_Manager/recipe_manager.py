@@ -1,24 +1,25 @@
+import os
+
+# **********# for testing purposes #**********#
+
 
 def print_recipe_details(recipe, recipe_details):
     for recipe_detail in recipe_details:
         detail = getattr(recipe, 'get_'+recipe_detail)()
-        match recipe_detail:
-            case "title":
-                print(f"Recipe Title: {detail}")
-            case "ingredients":
-                print("The ingredients are: ")
-                print(check_if_list_or_string(detail).capitalize())
-            case "instructions":
-                print("The instructions are: ")
-                print(check_if_list_or_string(detail).capitalize())
-            case "cooking_time":
-                print(f"This recipe takes {detail} minutes to cook")
-            case "dietary_info":
-                print(f"Dietary information: {detail}")
-                print(check_if_list_or_string(detail).capitalize())
-            case "equipment":
-                print("The equipment needed is: ")
-                print(check_if_list_or_string(detail).capitalize())
+        if recipe_detail == "title":
+            print(f"Recipe Title: {detail}")
+        elif recipe_detail == "ingredients":
+            print(f"Ingredients: {check_if_list_or_string(detail)}")
+        elif recipe_detail == "instructions":
+            print(f"Instructions: {check_if_list_or_string(detail)}")
+        elif recipe_detail == "cooking_time":
+            print(f"This recipe takes {detail} minutes to cook")
+        elif recipe_detail == "dietary_info":
+            print(f"Dietary Information: {check_if_list_or_string(detail)}")
+        elif recipe_detail == "equipment":
+            print(f"Equipment Needed: {check_if_list_or_string(detail)}")
+        else:
+            print(f"Invalid recipe detail: {recipe_detail}")
 
 
 def check_if_list_or_string(value):
@@ -26,14 +27,22 @@ def check_if_list_or_string(value):
         return '\n'.join(value)
     else:
         return value
+# **********# till here for testing purposes #**********#
 
 
 class RecipeManager:
-    def __init__(self):
-        self.recipes = []  # Initialize an empty list to store recipes
+    _instance = None
+
+    # Initialize the RecipeManager class with an empty list of recipes
+    # This is a singleton class, so only one instance of this class can be created
+    def __new__(cls):
+        if cls._instance is None:  # Check if an instance of this class has already been created
+            cls._instance = super().__new__(cls)  # If not, create an instance
+            cls._instance.recipes = []
+        return cls._instance
 
     def add_recipe(self, recipe):
-        self.recipes.append(recipe)  # Add a recipe to the list of recipes        
+        self.recipes.append(recipe)  # Add a recipe to the list of recipes
 
     def get_all_recipes(self):
         return self.recipes  # Return all recipes
@@ -97,7 +106,7 @@ class RecipeManager:
     # Update a recipe by its title with a new recipe
 
     def update_recipe(self, recipe_title, new_recipe):
-        #recipe_selected = recipe.curselection()
+        # recipe_selected = recipe.curselection()
         for recipe in self.recipes:
             # Find the recipe with the matching title and update its attributes
             if recipe.get_title() == recipe_title:
@@ -151,11 +160,51 @@ class RecipeManager:
                 self.recipes.remove(recipe)  # Remove the recipe from the list
                 break
 
-    # This function prints the details of recipes by iterating over a list of recipes.
+    # get recipe details
+    def get_recipe(self, recipe, recipe_attributes=["title", "ingredients", "instructions", "cooking_time", "dietary_info", "equipment"]):
+        return recipe.get_recipe_details(recipe_attributes)
+
+        # print(recipe.get_details(recipe_attributes))
+        # print("\n")
+        # print(recipe)
+        # return recipe.get_details(recipe_attributes)
+
+    # def save_recipes_to_file(self):
+    #     with open("recipes.txt", "w") as file:
+    #         for recipe in self.recipes:
+    #             file.write(recipe.get_details() + "\n")
+
+    #     def save_recipes(self):
+    #     for recipe in self.recipes:
+    #         filename = os.path.join(recipe_folder_path, f"{recipe.get_title()}.txt")
+    #         with open(filename, 'w') as file:
+    #             file.write(f"{recipe.get_title()}\n")
+    #             file.write(f"{recipe.get_ingredients()}\n")
+    #             file.write(f"{recipe.get_instructions()}\n")
+    #             file.write(f"{recipe.get_cooking_time()}\n")
+    #             file.write(f"{recipe.get_dietary_info()}\n")
+
+    # def load_recipes_from_file(self):
+    #     with open("recipes.txt", "r") as file:
+    #         for line in file:
+    #             recipe_details = line.split(",")
+    #             recipe_title = recipe_details[0]
+    #             recipe_ingredients = recipe_details[1]
+    #             recipe_instructions = recipe_details[2]
+    #             recipe_cooking_time = recipe_details[3]
+    #             recipe_dietary_info = recipe_details[4]
+    #             recipe_equipment = recipe_details[5]
+    #             recipe = Recipe(recipe_title, recipe_ingredients, recipe_instructions,
+    #                             recipe_cooking_time, recipe_dietary_info, recipe_equipment)
+    #             self.recipes.append(recipe)
+
+    # **********# for testing purposes #**********#
+
     def print_recipes(self, recipes, recipe_attributes=["title", "ingredients", "instructions", "cooking_time", "dietary_info", "equipment"]):
-        # Iterate through each recipe in the 'recipes' list.
         for recipe in recipes:
-            # Call the 'print_recipe_details' function to print the details of the current recipe.
+            # Iterate through each recipe in the 'recipes' list.
             print_recipe_details(recipe, recipe_attributes)
+            # Call the 'print_recipe_details' function to print the details of the current recipe.
             # Print a new line after printing the details of each recipe.
             print("\n")
+    # **********# for testing purposes #**********#
